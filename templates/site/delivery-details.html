@@ -1,0 +1,408 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yetkazib Berish Ma'lumotlari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a0933, #3a1c71, #2a1d4e);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #ffeb3b, #0288d1);
+            box-shadow: 0 0 20px rgba(255, 235, 59, 0.7);
+            animation: glowPulse 1.5s ease-in-out infinite alternate;
+            border-radius: 12px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px #ffeb3b, 0 0 20px #0288d1;
+        }
+        .nav-section {
+            background: rgba(255, 235, 59, 0.1);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .nav-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .nav-card {
+            background: linear-gradient(45deg, #ffeb3b, #0288d1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.8);
+        }
+        .nav-card input {
+            display: none;
+        }
+        .nav-card input:checked + label {
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        .nav-card input:checked + label::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 255, 204, 0.2);
+            border-radius: 8px;
+            z-index: -1;
+        }
+        .nav-card label {
+            font-size: 1rem;
+            cursor: pointer;
+            text-shadow: 0 0 5px #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+        .delivery-image {
+            display: block;
+            margin: 1rem auto;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+            max-width: 350px;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.5);
+        }
+        .delivery-image:hover {
+            transform: scale(1.03);
+        }
+        .info-section {
+            background: rgba(255, 235, 59, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+            margin-bottom: 2rem;
+        }
+        .info-section p {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+        .input-group {
+            margin: 1rem 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 5px #0288d1;
+        }
+        .neon-input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #ffeb3b;
+            border-radius: 8px;
+            background: rgba(255, 235, 59, 0.1);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .neon-input:focus {
+            outline: none;
+            border-color: #0288d1;
+            box-shadow: 0 0 15px rgba(2, 136, 209, 0.7);
+        }
+        .result-section {
+            display: none;
+            background: rgba(255, 235, 59, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .result-section p {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+        .neon-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ffeb3b, #0288d1);
+            border: none;
+            border-radius: 8px;
+            color: #1a0933;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.7);
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        .neon-button:hover {
+            box-shadow: 0 0 25px rgba(255, 235, 59, 1);
+            transform: scale(1.05);
+        }
+        @keyframes glowPulse {
+            from {
+                box-shadow: 0 0 10px #ffeb3b, 0 0 20px #0288d1;
+            }
+            to {
+                box-shadow: 0 0 20px #ffeb3b, 0 0 30px #0288d1;
+            }
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .delivery-image {
+                max-width: 250px;
+            }
+            .nav-card {
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Yetkazib Berish Ma'lumotlari</h1>
+    </header>
+
+    <div class="container">
+        <img src="https://images.unsplash.com/photo-1595968422859-6cffd9e7e6e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Yetkazib berish rasmi" class="delivery-image">
+
+        <section class="nav-section">
+            <div class="nav-options">
+                <div class="nav-card">
+                    <input type="radio" name="delivery-type" id="kichik" value="kichik" checked onchange="updateVehicleInfo()">
+                    <label for="kichik"><i class="fas fa-truck mr-2"></i>Kichik yuk</label>
+                </div>
+                <div class="nav-card">
+                    <input type="radio" name="delivery-type" id="orta" value="orta" onchange="updateVehicleInfo()">
+                    <label for="orta"><i class="fas fa-truck-pickup mr-2"></i>O‘rta yuk</label>
+                </div>
+                <div class="nav-card">
+                    <input type="radio" name="delivery-type" id="katta" value="katta" onchange="updateVehicleInfo()">
+                    <label for="katta"><i class="fas fa-truck-moving mr-2"></i>Katta yuk</label>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <p><i class="fas fa-map-marker-alt mr-2"></i><span class="font-semibold">Manzildan:</span> <span id="from"></span></p>
+            <p><i class="fas fa-flag-checkered mr-2"></i><span class="font-semibold">Manzilgacha:</span> <span id="to"></span></p>
+            <p><i class="fas fa-car-alt mr-2"></i><span class="font-semibold">Moshina markasi:</span> <span id="carBrand"></span></p>
+            <p><i class="fas fa-car-side mr-2"></i><span class="font-semibold">Moshina nomi:</span> <span id="carModel"></span></p>
+            <p><i class="fas fa-ruler-vertical mr-2"></i><span class="font-semibold">Balandligi:</span> <span id="height"></span> m</p>
+            <p><i class="fas fa-ruler-horizontal mr-2"></i><span class="font-semibold">Uzunligi:</span> <span id="length"></span> m</p>
+            <p><i class="fas fa-ruler-combined mr-2"></i><span class="font-semibold">Eni:</span> <span id="width"></span> m</p>
+            <div class="input-group">
+                <label for="weight"><i class="fas fa-weight-hanging mr-2"></i>Yuk vazni (kg):</label>
+                <input type="number" id="weight" class="neon-input" placeholder="Yuk vaznini kiriting" min="0" oninput="validateWeight()">
+            </div>
+            <p><i class="fas fa-user mr-2"></i><span class="font-semibold">Haydovchi:</span> <span id="driverName"></span></p>
+            <p><i class="fas fa-phone mr-2"></i><span class="font-semibold">Telefon raqami:</span> <a href="tel:" id="driverPhone" class="text-blue-300 hover:underline"></a></p>
+            <p><i class="fas fa-car mr-2"></i><span class="font-semibold">Mashina raqami:</span> <span id="carNumber"></span></p>
+        </section>
+
+        <button class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator mr-2"></i>Narx va Vaqtni Hisoblash</button>
+
+        <section id="result" class="result-section">
+            <p><i class="fas fa-ruler mr-2"></i><span class="font-semibold">Masofa:</span> <span id="distance"></span> km</p>
+            <p><i class="fas fa-clock mr-2"></i><span class="font-semibold">Taxminiy vaqt:</span> <span id="time"></span> daqiqa</p>
+            <p><i class="fas fa-money-bill-wave mr-2"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
+        </section>
+
+        <a href="index.html" class="neon-button"><i class="fas fa-arrow-left mr-2"></i>Orqaga</a>
+    </div>
+
+    <script>
+        function generateRandomDriver() {
+            const names = [
+                "Ali Vohidov", "Bobur Mirzaev", "Davron Juraev", "Eldor Rahimov", 
+                "Farrux Xo‘jayev", "G‘olib Toshmatov", "Hasan Karimov", "Islom Odilov"
+            ];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+
+            const phonePrefix = "+998";
+            const phoneCodes = ["90", "91", "93", "94", "95", "97", "98", "99"];
+            const randomCode = phoneCodes[Math.floor(Math.random() * phoneCodes.length)];
+            const phoneNumber = `${phonePrefix}${randomCode}${Math.floor(1000000 + Math.random() * 9000000)}`;
+
+            const regionCode = String(Math.floor(10 + Math.random() * 90)).padStart(2, '0');
+            const letters = "ABCDEF";
+            const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            const numberPart = String(Math.floor(100 + Math.random() * 900)).padStart(3, '0');
+            const carNumber = `${regionCode} ${randomLetter} ${numberPart}`;
+
+            return { name: randomName, phone: phoneNumber, carNumber: carNumber };
+        }
+
+        function updateDriverInfo() {
+            const driver = generateRandomDriver();
+            document.getElementById('driverName').textContent = driver.name;
+            const phoneLink = document.getElementById('driverPhone');
+            phoneLink.textContent = driver.phone;
+            phoneLink.href = `tel:${driver.phone}`;
+            document.getElementById('carNumber').textContent = driver.carNumber;
+        }
+
+        function updateVehicleInfo() {
+            const deliveryType = document.querySelector('input[name="delivery-type"]:checked').value;
+            const vehicleInfo = {
+                kichik: { brand: 'Hyundai', model: 'Porter', height: 1.9, length: 4.8, width: 1.8 },
+                orta: { brand: 'Hyundai', model: 'H100', height: 2.2, length: 5.2, width: 2.0 },
+                katta: { brand: 'Hyundai', model: 'H350', height: 2.7, length: 6.2, width: 2.4 }
+            };
+
+            document.getElementById('carBrand').textContent = vehicleInfo[deliveryType].brand;
+            document.getElementById('carModel').textContent = vehicleInfo[deliveryType].model;
+            document.getElementById('height').textContent = vehicleInfo[deliveryType].height;
+            document.getElementById('length').textContent = vehicleInfo[deliveryType].length;
+            document.getElementById('width').textContent = vehicleInfo[deliveryType].width;
+        }
+
+        function validateWeight() {
+            const weightInput = document.getElementById('weight');
+            if (weightInput.value < 0) {
+                weightInput.value = 0;
+            }
+        }
+
+        function calculateFare() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const from = urlParams.get('from') || 'Toshkent, Chilanzar, 45-uy';
+            const to = urlParams.get('to') || '';
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const deliveryType = document.querySelector('input[name="delivery-type"]:checked').value;
+
+            document.getElementById('from').textContent = from;
+            document.getElementById('to').textContent = to;
+
+            if (!to) {
+                alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
+                return;
+            }
+
+            if (weight <= 0) {
+                alert("Iltimos, yuk vaznini kiriting!");
+                return;
+            }
+
+            // Maksimal vaznni tekshirish
+            const maxWeight = { kichik: 100, orta: 500, katta: 1000 };
+            if (weight > maxWeight[deliveryType] && weight <= 1000) {
+                alert(`Tanlangan kategoriya (${deliveryType}) ${maxWeight[deliveryType]} kg gacha yukni yetkazadi. Iltimos, boshqa kategoriyani tanlang!`);
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            const distanceSpan = document.getElementById('distance');
+            const timeSpan = document.getElementById('time');
+            const fareSpan = document.getElementById('fare');
+
+            // Tasodifiy masofa (5-15 km)
+            const distance = Math.random() * 10 + 5;
+            const time = Math.round(distance * 2); // 1 km ~ 2 daqiqa
+
+            // Narx hisoblash
+            const baseFare = 5000;
+            let pricePerKm;
+            if (deliveryType === 'kichik') pricePerKm = 3000;
+            else if (deliveryType === 'orta') pricePerKm = 3500;
+            else pricePerKm = 4000;
+
+            // Yuk vazniga qarab qo‘shimcha narx
+            if (weight > 1000) {
+                pricePerKm += 1500;
+            } else if (weight > 500) {
+                pricePerKm += 1000;
+            } else if (weight > 100) {
+                pricePerKm += 500;
+            }
+
+            const fare = Math.round(distance * pricePerKm + baseFare);
+
+            distanceSpan.textContent = distance.toFixed(1);
+            timeSpan.textContent = time;
+            fareSpan.textContent = fare.toLocaleString();
+
+            resultDiv.style.display = 'block';
+        }
+
+        // Sahifa yuklanganda ma'lumotlarni to'ldirish
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const from = urlParams.get('from') || 'Toshkent, Chilanzar, 45-uy';
+            const to = urlParams.get('to') || '';
+
+            document.getElementById('from').textContent = from;
+            document.getElementById('to').textContent = to;
+
+            // Tasodifiy haydovchi ma'lumotlarini generatsiya qilish
+            updateDriverInfo();
+
+            // Dastlabki moshina ma'lumotlarini sozlash
+            updateVehicleInfo();
+        };
+    </script>
+</body>
+</html>

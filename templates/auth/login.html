@@ -1,0 +1,230 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0d0b3a, #1c2526);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #00b0ff, #c6ff00);
+            box-shadow: 0 0 25px rgba(0, 176, 255, 0.7);
+            animation: futuristicGlow 1.5s ease-in-out infinite alternate;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px #00b0ff, 0 0 25px #c6ff00;
+        }
+        .form-section {
+            background: rgba(0, 176, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
+            backdrop-filter: blur(5px);
+        }
+        .input-group {
+            margin: 1.2rem 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 8px #c6ff00;
+        }
+        .neon-input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #c6ff00;
+            border-radius: 10px;
+            background: rgba(0, 176, 255, 0.1);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(198, 255, 0, 0.5);
+        }
+        .neon-input:focus {
+            outline: none;
+            border-color: #00b0ff;
+            box-shadow: 0 0 15px rgba(0, 176, 255, 0.7);
+        }
+        .error {
+            color: #ff1744;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        .neon-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #00b0ff, #c6ff00);
+            border: none;
+            border-radius: 10px;
+            color: #0d0b3a;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 176, 255, 0.7);
+            transition: all 0.3s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .neon-button:hover {
+            box-shadow: 0 0 30px rgba(198, 255, 0, 1);
+            transform: scale(1.05);
+        }
+        .link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+        .link a {
+            color: #c6ff00;
+            text-decoration: none;
+            text-shadow: 0 0 8px #c6ff00;
+            transition: color 0.3s ease;
+        }
+        .link a:hover {
+            color: #00b0ff;
+            text-shadow: 0 0 12px #00b0ff;
+        }
+        @keyframes futuristicGlow {
+            from {
+                box-shadow: 0 0 15px #00b0ff, 0 0 25px #c6ff00;
+            }
+            to {
+                box-shadow: 0 0 25px #00b0ff, 0 0 35px #c6ff00;
+            }
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+                letter-spacing: 3px;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Kirish</h1>
+    </header>
+
+    <div class="container">
+        <section class="form-section">
+            <form id="loginForm" onsubmit="handleSubmit(event)">
+                <div class="input-group">
+                    <label for="firstName"><i class="fas fa-user mr-2"></i>Ism:</label>
+                    <input type="text" id="firstName" class="neon-input" placeholder="Ismingizni kiriting">
+                    <div id="firstNameError" class="error">Ism kiritish majburiy!</div>
+                </div>
+                <div class="input-group">
+                    <label for="phone"><i class="fas fa-phone mr-2"></i>Telefon raqami:</label>
+                    <input type="text" id="phone" class="neon-input" placeholder="+998901234567">
+                    <div id="phoneError" class="error">Telefon raqami +998 bilan boshlanib, 12 raqam bo‘lishi kerak!</div>
+                </div>
+                <button type="submit" class="neon-button"><i class="fas fa-sign-in-alt mr-2"></i>Kirish</button>
+            </form>
+            <div class="link">
+                <p>Akountingiz yo‘qmi? <a href="register.html">Ro‘yxatdan o‘ting</a></p>
+            </div>
+        </section>
+        <a href="index.html" class="neon-button"><i class="fas fa-arrow-left mr-2"></i>Orqaga</a>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+            // Validate first name
+            if (!firstName) {
+                document.getElementById('firstNameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate phone
+            const phoneRegex = /^\+998\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('phoneError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                const formData = { firstName, phone };
+                console.log('Login Data:', formData);
+                alert('Kirish muvaffaqiyatli! Ma’lumotlar konsolga chiqarildi.');
+                document.getElementById('loginForm').reset();
+            }
+        }
+    </script>
+</body>
+</html>
