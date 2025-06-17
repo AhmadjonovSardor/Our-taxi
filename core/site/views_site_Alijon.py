@@ -10,4 +10,4 @@ def index(request):
 
 def cargo(request):
     ctx = {}
-    return render(request, "site/index.html", ctx)
+    return render(request, "site/cargo-details.html", ctx)
