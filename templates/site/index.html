@@ -1,234 +1,269 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTaxi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Arial&display=swap" rel="stylesheet">
+    <title>MyTaxi - Toshkentda Tezkor Transport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #ffffff;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
         }
         .header {
-            text-align: center;
+            background: #ffffff;
             padding: 2rem;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            box-shadow: 0 0 20px rgba(255, 0, 204, 0.7);
-            animation: neonGlow 2s ease-in-out infinite alternate;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .header img.logo {
+            max-width: 180px;
+            margin-bottom: 0.5rem;
         }
         .header h1 {
-            font-size: 3rem;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #ffcc00;
         }
         .header p {
             font-size: 1.2rem;
-            margin: 0.5rem 0;
-            opacity: 0.8;
+            color: #555;
+            margin-top: 0.5rem;
         }
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .location-section {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
         .input-group {
             flex: 1 1 300px;
         }
         .input-group label {
-            display: block;
             font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
             margin-bottom: 0.5rem;
-            text-shadow: 0 0 5px #00ffcc;
+            display: flex;
+            align-items: center;
         }
-        .neon-input {
+        .input-group i {
+            color: #ffcc00;
+            margin-right: 0.5rem;
+            font-size: 1.4rem;
+        }
+        .input-field {
             width: 100%;
-            padding: 0.8rem;
+            padding: 1rem;
             font-size: 1rem;
-            border: 2px solid #00ffcc;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            background: rgba(0, 255, 204, 0.1);
-            color: #ffffff;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .neon-input:focus {
+        .input-field:focus {
             outline: none;
-            border-color: #ff00cc;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.7);
+            border-color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
         }
-        .service-section, .taxi-type-section {
+        .service-section {
             margin-bottom: 2rem;
         }
-        .service-section h2, .taxi-type-section h2 {
+        .service-section h2 {
             font-size: 1.8rem;
+            font-weight: 500;
+            color: #333;
             text-align: center;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px #ff00cc;
+            margin-bottom: 1.5rem;
         }
-        .service-options, .taxi-options {
+        .service-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
         }
-        .service-card, .taxi-card {
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            padding: 1rem;
-            border-radius: 8px;
+        .service-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
-            min-width: 150px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            min-width: 140px;
             text-align: center;
+            position: relative;
         }
-        .service-card:hover, .taxi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(255, 0, 204, 0.8);
+        .service-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: #fff9e6;
         }
-        .service-card input, .taxi-card input {
+        .service-card input {
             display: none;
         }
-        .service-card label, .taxi-card label {
+        .service-card label {
             font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            text-shadow: 0 0 5px #ffffff;
         }
-        .service-card input:checked + label, .taxi-card input:checked + label {
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+        .service-card i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: #ffcc00;
+        }
+        .service-card input:checked + label {
+            color: #ffcc00;
+            font-weight: 700;
+        }
+        .service-card input:checked + label i {
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
         }
         .hint {
             text-align: center;
             font-size: 0.9rem;
-            color: #00ffcc;
-            opacity: 0.8;
+            color: #777;
+            margin-top: 1rem;
         }
-        .neon-button {
+        .submit-button {
             display: block;
             margin: 2rem auto;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: #ffcc00;
             border: none;
-            border-radius: 8px;
-            color: #ffffff;
+            border-radius: 10px;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.7);
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
-        .neon-button:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 204, 1);
+        .submit-button:hover {
+            background: #e6b800;
             transform: scale(1.05);
         }
-        .taxi-image {
-            display: block;
-            margin: 1rem auto;
-            border-radius: 1rem;
-            transition: transform 0.3s ease;
-            max-width: 300px;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
-        }
-        .taxi-image:hover {
-            transform: scale(1.02);
+        .submit-button i {
+            margin-right: 0.5rem;
         }
         .result-section {
             display: none;
             margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(0, 255, 204, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        @keyframes neonGlow {
-            from {
-                box-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff;
-            }
-            to {
-                box-shadow: 0 0 20px #ff00cc, 0 0 30px #3333ff;
-            }
+        .result-section p {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .result-section .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #666;
+        }
+        .footer {
+            margin-top: auto;
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .footer p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        .footer a:hover {
+            text-decoration: underline;
         }
         @media (max-width: 600px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.9rem;
+            }
+            .header img.logo {
+                max-width: 140px;
+            }
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
             }
             .location-section {
                 flex-direction: column;
+                gap: 1.2rem;
             }
-            .service-card, .taxi-card {
+            .service-card {
                 min-width: 120px;
+            }
+            .submit-button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
     <header class="header">
+        <img src="https://via.placeholder.com/180x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
         <h1>MyTaxi</h1>
-        <p>Zamonaviy va tezkor xizmatlar dunyosi</p>
+        <p>Toshkent bo‘ylab tezkor va qulay transport</p>
     </header>
 
     <div class="container">
-        <form>
+        <form id="taxiForm">
             <section class="location-section">
                 <div class="input-group">
-                    <label for="from"><i class="fas fa-map-marker-alt mr-2"></i>Qayerdan?</label>
-                    <input type="text" id="from" class="neon-input" name="from" placeholder="Manzildan" value="Toshkent, Chilanzar, 45-uy">
+                    <label for="from"><i class="fas fa-map-marker-alt"></i> Qayerdan?</label>
+                    <input type="text" id="from" class="input-field" name="from" placeholder="Masalan, Chilanzar, 45-uy" value="Toshkent, Chilanzar, 45-uy">
                 </div>
                 <div class="input-group">
-                    <label for="to"><i class="fas fa-flag-checkered mr-2"></i>Qayerga?</label>
-                    <input type="text" id="to" class="neon-input" name="to" placeholder="Manzilgacha">
+                    <label for="to"><i class="fas fa-flag-checkered"></i> Qayerga?</label>
+                    <input type="text" id="to" class="input-field" name="to" placeholder="Masalan, Yunusobod, 12-uy">
                 </div>
             </section>
 
@@ -237,28 +272,428 @@
                 <div class="service-options">
                     <div class="service-card">
                         <input type="radio" name="service" id="taxi" value="taxi" checked>
-                        <label for="taxi"><i class="fas fa-taxi mr-2"></i>Taksi</label>
+                        <label for="taxi"><i class="fas fa-taxi"></i> Ekonom Taksi</label>
                     </div>
                     <div class="service-card">
                         <input type="radio" name="service" id="delivery" value="delivery">
-                        <label for="delivery"><i class="fas fa-truck mr-2"></i>Yetkazib berish</label>
+                        <label for="delivery"><i class="fas fa-truck"></i> Yetkazib berish</label>
                     </div>
                     <div class="service-card">
                         <input type="radio" name="service" id="cargo" value="cargo">
-                        <label for="cargo"><i class="fas fa-box mr-2"></i>Yuk tashish</label>
+                        <label for="cargo"><i class="fas fa-box"></i> Yuk Tashish</label>
                     </div>
                 </div>
-                <p class="hint">Iltimos, xizmat turini tanlang</p>
+                <p class="hint">Sizga mos xizmatni tanlang</p>
             </section>
-            <button type="submit" class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator mr-2"></i>Buyurtma berish</button>
+
+            <button type="submit" class="submit-button"><i class="fas fa-car"></i> Haydovchi chaqirish</button>
         </form>
+
+        <div class="result-section" id="resultSection">
+            <p id="resultMessage"></p>
+            <div class="map-placeholder">Xarita: Haydovchi yo‘lda</div>
+        </div>
     </div>
 
+    <footer class="footer">
+        <p>Biz bilan bog'laning:
+            <a href="tel:+998123456789">+998 123 456 789</a> |
+            <a href="mailto:info@mytaxi.uz">info@mytaxi.uz</a>
+        </p>
+        <p><a href="#">Ilovamizni yuklab oling</a></p>
+        <p>© 2025 MyTaxi. Barcha huquqlar himoyalangan.</p>
+    </footer>
+
     <script>
+        function calculateFare(evt) {
+            evt.preventDefault();
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+            const service = document.querySelector('input[name="service"]:checked').value;
             if (!to) {
                 alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
                 return;
-           }
+            }
+            // Realistik narx va ma'lumotlar
+            const prices = {
+                taxi: "25,000 UZS",
+                delivery: "18,000 UZS",
+                cargo: "60,000 UZS"
+            };
+            const arrivalTimes = {
+                taxi: "5-10 daqiqa",
+                delivery: "15-20 daqiqa",
+                cargo: "20-30 daqiqa"
+            };
+            const drivers = [
+                { name: "Ali", car: "Chevrolet Cobalt", plate: "01 A 123 BC" },
+                { name: "Bobur", car: "Hyundai Accent", plate: "01 B 456 DE" },
+                { name: "Dilshod", car: "Kia Rio", plate: "01 C 789 FG" }
+            ];
+            const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
+            const resultMessage = `
+                Buyurtma qabul qilindi!<br>
+                Xizmat: ${service === 'taxi' ? 'Ekonom Taksi' : service === 'delivery' ? 'Yetkazib berish' : 'Yuk Tashish'}<br>
+                Taxminiy narx: ${prices[service]}<br>
+                Haydovchi: ${randomDriver.name} (${randomDriver.car}, ${randomDriver.plate})<br>
+                Kelish vaqti: ${arrivalTimes[service]}
+            `;
+            const resultSection = document.getElementById('resultSection');
+            const resultMessageElement = document.getElementById('resultMessage');
+            resultMessageElement.innerHTML = resultMessage;
+            resultSection.style.display = 'block';
+        }
+
+        document.getElementById('taxiForm').addEventListener('submit', calculateFare);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTaxi - Toshkentda Tezkor Transport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+        .header {
+            background: #ffffff;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .header img.logo {
+            max-width: 180px;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+        .header p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .location-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .input-group {
+            flex: 1 1 300px;
+        }
+        .input-group label {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .input-group i {
+            color: #ffcc00;
+            margin-right: 0.5rem;
+            font-size: 1.4rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
+        }
+        .service-section {
+            margin-bottom: 2rem;
+        }
+        .service-section h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .service-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        .service-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+            position: relative;
+        }
+        .service-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: #fff9e6;
+        }
+        .service-card input {
+            display: none;
+        }
+        .service-card label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .service-card i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: #ffcc00;
+        }
+        .service-card input:checked + label {
+            color: #ffcc00;
+            font-weight: 700;
+        }
+        .service-card input:checked + label i {
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+        }
+        .hint {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 1rem;
+        }
+        .submit-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .submit-button:hover {
+            background: #e6b800;
+            transform: scale(1.05);
+        }
+        .submit-button i {
+            margin-right: 0.5rem;
+        }
+        .result-section {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-section p {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .result-section .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #666;
+        }
+        .footer {
+            margin-top: auto;
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .footer p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.9rem;
+            }
+            .header img.logo {
+                max-width: 140px;
+            }
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            .location-section {
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+            .service-card {
+                min-width: 120px;
+            }
+            .submit-button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="https://via.placeholder.com/180x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
+        <h1>MyTaxi</h1>
+        <p>Toshkent bo‘ylab tezkor va qulay transport</p>
+    </header>
+
+    <div class="container">
+        <form id="taxiForm">
+            <section class="location-section">
+                <div class="input-group">
+                    <label for="from"><i class="fas fa-map-marker-alt"></i> Qayerdan?</label>
+                    <input type="text" id="from" class="input-field" name="from" placeholder="Masalan, Chilanzar, 45-uy" value="Toshkent, Chilanzar, 45-uy">
+                </div>
+                <div class="input-group">
+                    <label for="to"><i class="fas fa-flag-checkered"></i> Qayerga?</label>
+                    <input type="text" id="to" class="input-field" name="to" placeholder="Masalan, Yunusobod, 12-uy">
+                </div>
+            </section>
+
+            <section class="service-section">
+                <h2>Xizmat turi</h2>
+                <div class="service-options">
+                    <div class="service-card">
+                        <input type="radio" name="service" id="taxi" value="taxi" checked>
+                        <label for="taxi"><i class="fas fa-taxi"></i> Ekonom Taksi</label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="service" id="delivery" value="delivery">
+                        <label for="delivery"><i class="fas fa-truck"></i> Yetkazib berish</label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="service" id="cargo" value="cargo">
+                        <label for="cargo"><i class="fas fa-box"></i> Yuk Tashish</label>
+                    </div>
+                </div>
+                <p class="hint">Sizga mos xizmatni tanlang</p>
+            </section>
+
+            <button type="submit" class="submit-button"><i class="fas fa-car"></i> Haydovchi chaqirish</button>
+        </form>
+
+        <div class="result-section" id="resultSection">
+            <p id="resultMessage"></p>
+            <div class="map-placeholder">Xarita: Haydovchi yo‘lda</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Biz bilan bog'laning:
+            <a href="tel:+998123456789">+998 123 456 789</a> |
+            <a href="mailto:info@mytaxi.uz">info@mytaxi.uz</a>
+        </p>
+        <p><a href="#">Ilovamizni yuklab oling</a></p>
+        <p>© 2025 MyTaxi. Barcha huquqlar himoyalangan.</p>
+    </footer>
+
+    <script>
+        function calculateFare(evt) {
+            evt.preventDefault();
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+            const service = document.querySelector('input[name="service"]:checked').value;
+            if (!to) {
+                alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
+                return;
+            }
+            // Realistik narx va ma'lumotlar
+            const prices = {
+                taxi: "25,000 UZS",
+                delivery: "18,000 UZS",
+                cargo: "60,000 UZS"
+            };
+            const arrivalTimes = {
+                taxi: "5-10 daqiqa",
+                delivery: "15-20 daqiqa",
+                cargo: "20-30 daqiqa"
+            };
+            const drivers = [
+                { name: "Ali", car: "Chevrolet Cobalt", plate: "01 A 123 BC" },
+                { name: "Bobur", car: "Hyundai Accent", plate: "01 B 456 DE" },
+                { name: "Dilshod", car: "Kia Rio", plate: "01 C 789 FG" }
+            ];
+            const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
+            const resultMessage = `
+                Buyurtma qabul qilindi!<br>
+                Xizmat: ${service === 'taxi' ? 'Ekonom Taksi' : service === 'delivery' ? 'Yetkazib berish' : 'Yuk Tashish'}<br>
+                Taxminiy narx: ${prices[service]}<br>
+                Haydovchi: ${randomDriver.name} (${randomDriver.car}, ${randomDriver.plate})<br>
+                Kelish vaqti: ${arrivalTimes[service]}
+            `;
+            const resultSection = document.getElementById('resultSection');
+            const resultMessageElement = document.getElementById('resultMessage');
+            resultMessageElement.innerHTML = resultMessage;
+            resultSection.style.display = 'block';
+        }
+
+        document.getElementById('taxiForm').addEventListener('submit', calculateFare);
     </script>
 </body>
 </html>
