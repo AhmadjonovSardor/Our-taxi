@@ -1,8 +1,6 @@
 from django.urls import path
 from .views_site_Sardor import taxi,delivery
-from .views_site_Alijon import index, cargo
-
-
+from .views_site_Alijon import index,cargo
 
 urlpatterns = [
     path('',index,name='home'),
