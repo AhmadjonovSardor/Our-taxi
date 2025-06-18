@@ -220,119 +220,45 @@
     </header>
 
     <div class="container">
-        <img src="https://images.unsplash.com/photo-1583688158127-377f5e8a7f30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Taksi rasmi" class="taxi-image">
+        <form>
+            <section class="location-section">
+                <div class="input-group">
+                    <label for="from"><i class="fas fa-map-marker-alt mr-2"></i>Qayerdan?</label>
+                    <input type="text" id="from" class="neon-input" name="from" placeholder="Manzildan" value="Toshkent, Chilanzar, 45-uy">
+                </div>
+                <div class="input-group">
+                    <label for="to"><i class="fas fa-flag-checkered mr-2"></i>Qayerga?</label>
+                    <input type="text" id="to" class="neon-input" name="to" placeholder="Manzilgacha">
+                </div>
+            </section>
 
-        <section class="location-section">
-            <div class="input-group">
-                <label for="from"><i class="fas fa-map-marker-alt mr-2"></i>Qayerdan?</label>
-                <input type="text" id="from" class="neon-input" placeholder="Manzildan" value="Toshkent, Chilanzar, 45-uy">
-            </div>
-            <div class="input-group">
-                <label for="to"><i class="fas fa-flag-checkered mr-2"></i>Qayerga?</label>
-                <input type="text" id="to" class="neon-input" placeholder="Manzilgacha">
-            </div>
-        </section>
-
-        <section class="service-section">
-            <h2>Xizmat turi</h2>
-            <div class="service-options">
-                <div class="service-card">
-                    <input type="radio" name="service" id="taxi" value="taxi" checked>
-                    <label for="taxi"><i class="fas fa-taxi mr-2"></i>Taksi</label>
+            <section class="service-section">
+                <h2>Xizmat turi</h2>
+                <div class="service-options">
+                    <div class="service-card">
+                        <input type="radio" name="service" id="taxi" value="taxi" checked>
+                        <label for="taxi"><i class="fas fa-taxi mr-2"></i>Taksi</label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="service" id="delivery" value="delivery">
+                        <label for="delivery"><i class="fas fa-truck mr-2"></i>Yetkazib berish</label>
+                    </div>
+                    <div class="service-card">
+                        <input type="radio" name="service" id="cargo" value="cargo">
+                        <label for="cargo"><i class="fas fa-box mr-2"></i>Yuk tashish</label>
+                    </div>
                 </div>
-                <div class="service-card">
-                    <input type="radio" name="service" id="delivery" value="delivery">
-                    <label for="delivery"><i class="fas fa-truck mr-2"></i>Yetkazib berish</label>
-                </div>
-                <div class="service-card">
-                    <input type="radio" name="service" id="cargo" value="cargo">
-                    <label for="cargo"><i class="fas fa-box mr-2"></i>Yuk tashish</label>
-                </div>
-            </div>
-            <p class="hint">Iltimos, xizmat turini tanlang</p>
-        </section>
-
-        <section class="taxi-type-section">
-            <h2>Taksi turi</h2>
-            <div class="taxi-options">
-                <div class="taxi-card">
-                    <input type="radio" name="taxi-type" id="ekonom" value="ekonom" checked>
-                    <label for="ekonom"><i class="fas fa-car mr-2"></i>Ekonom</label>
-                </div>
-                <div class="taxi-card">
-                    <input type="radio" name="taxi-type" id="komfort" value="komfort">
-                    <label for="komfort"><i class="fas fa-car-side mr-2"></i>Komfort</label>
-                </div>
-                <div class="taxi-card">
-                    <input type="radio" name="taxi-type" id="miniven" value="miniven">
-                    <label for="miniven"><i class="fas fa-van-shuttle mr-2"></i>Miniven</label>
-                </div>
-            </div>
-            <p class="hint">Iltimos, taksi turini tanlang</p>
-        </section>
-
-        <button class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator mr-2"></i>Buyurtma berish</button>
-
-        <section id="result" class="result-section">
-            <h2 class="text-center">Buyurtma ma'lumotlari</h2>
-            <p><i class="fas fa-ruler mr-2"></i><span class="font-semibold">Masofa:</span> <span id="distance"></span> km</p>
-            <p><i class="fas fa-clock mr-2"></i><span class="font-semibold">Taxminiy vaqt:</span> <span id="time"></span> daqiqa</p>
-            <p><i class="fas fa-money-bill-wave mr-2"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
-            <p><i class="fas fa-taxi mr-2"></i><span class="font-semibold">Haydovchi:</span> Ism Familya</p>
-            <p><i class="fas fa-phone mr-2"></i><span class="font-semibold">Telefon raqami:</span> <a href="tel:+998901234567" class="text-blue-300 hover:underline">+998 90 123 45 67</a></p>
-            <p><i class="fas fa-car mr-2"></i><span class="font-semibold">Mashina raqami:</span> 01 ABC 123</p>
-        </section>
+                <p class="hint">Iltimos, xizmat turini tanlang</p>
+            </section>
+            <button type="submit" class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator mr-2"></i>Buyurtma berish</button>
+        </form>
     </div>
 
     <script>
-        function calculateFare() {
-            const from = document.getElementById('from').value;
-            const to = document.getElementById('to').value;
-            const service = document.querySelector('input[name="service"]:checked').value;
-            const taxiType = document.querySelector('input[name="taxi-type"]:checked')?.value;
-            const resultDiv = document.getElementById('result');
-            const distanceSpan = document.getElementById('distance');
-            const timeSpan = document.getElementById('time');
-            const fareSpan = document.getElementById('fare');
-
             if (!to) {
                 alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
                 return;
-            }
-
-            if (service === 'taxi' && !taxiType) {
-                alert("Iltimos, taksi turini tanlang!");
-                return;
-            }
-
-            // Tasodifiy masofa (5-15 km)
-            const distance = Math.random() * 10 + 5;
-            const time = Math.round(distance * 2); // 1 km ~ 2 daqiqa
-
-            // Narx hisoblash: xizmat turi va taksi turiga qarab
-            let baseFare = 5000; // Boshlang'ich narx
-            let pricePerKm = 3000; // Standart km narxi
-            if (service === 'delivery') pricePerKm = 3500;
-            if (service === 'cargo') pricePerKm = 5000;
-            if (taxiType === 'komfort') pricePerKm *= 1.2;
-            if (taxiType === 'miniven') pricePerKm *= 1.5;
-
-            const fare = Math.round(distance * pricePerKm + baseFare);
-
-            distanceSpan.textContent = distance.toFixed(1);
-            timeSpan.textContent = time;
-            fareSpan.textContent = fare.toLocaleString();
-
-            resultDiv.style.display = 'block';
-        }
-
-        // Xizmat turi tanlanganda taksi turi bo'limini ko'rsatish/yashirish
-        document.querySelectorAll('input[name="service"]').forEach(input => {
-            input.addEventListener('change', () => {
-                const taxiSection = document.querySelector('.taxi-type-section');
-                taxiSection.style.display = input.value === 'taxi' ? 'block' : 'none';
-            });
-        });
+           }
     </script>
 </body>
 </html>

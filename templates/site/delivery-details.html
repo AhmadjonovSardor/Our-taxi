@@ -227,7 +227,6 @@
     </header>
 
     <div class="container">
-        <img src="https://images.unsplash.com/photo-1595968422859-6cffd9e7e6e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Yetkazib berish rasmi" class="delivery-image">
 
         <section class="nav-section">
             <div class="nav-options">
@@ -271,7 +270,7 @@
             <p><i class="fas fa-money-bill-wave mr-2"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
         </section>
 
-        <a href="index.html" class="neon-button"><i class="fas fa-arrow-left mr-2"></i>Orqaga</a>
+        <a href="{% url 'home' %}" class="neon-button"><i class="fas fa-arrow-left mr-2"></i>Back</a>
     </div>
 
     <script>
@@ -349,11 +348,11 @@
 
             // Maksimal vaznni tekshirish
             const maxWeight = { kichik: 100, orta: 500, katta: 1000 };
-            if (weight > maxWeight[deliveryType] && weight <= 1000) {
+            if (weight > maxWeight[deliveryType]) {
+                console.log(weight)
                 alert(`Tanlangan kategoriya (${deliveryType}) ${maxWeight[deliveryType]} kg gacha yukni yetkazadi. Iltimos, boshqa kategoriyani tanlang!`);
                 return;
             }
-
             const resultDiv = document.getElementById('result');
             const distanceSpan = document.getElementById('distance');
             const timeSpan = document.getElementById('time');
@@ -372,11 +371,11 @@
 
             // Yuk vazniga qarab qo‘shimcha narx
             if (weight > 1000) {
-                pricePerKm += 1500;
+                pricePerKm += 2000;
             } else if (weight > 500) {
-                pricePerKm += 1000;
+                pricePerKm += 1500;
             } else if (weight > 100) {
-                pricePerKm += 500;
+                pricePerKm += 1000;
             }
 
             const fare = Math.round(distance * pricePerKm + baseFare);
@@ -391,8 +390,8 @@
         // Sahifa yuklanganda ma'lumotlarni to'ldirish
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const from = urlParams.get('from') || 'Toshkent, Chilanzar, 45-uy';
-            const to = urlParams.get('to') || '';
+            const from = urlParams.get('from') || 'Hato';
+            const to = urlParams.get('to') || 'Hato';
 
             document.getElementById('from').textContent = from;
             document.getElementById('to').textContent = to;

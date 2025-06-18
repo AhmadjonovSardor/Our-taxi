@@ -17,7 +17,6 @@ class CarDelivery(models.Model):
     height = models.PositiveSmallIntegerField(verbose_name=_('Yuk mashina balandligi'))
     width = models.PositiveSmallIntegerField(verbose_name=_('Yuk mashina eni'))
     length = models.PositiveSmallIntegerField(verbose_name=_('Yuk mashina uzunligi'))
-    image = models.ImageField(verbose_name=_('Yuk mashina rasmi'),upload_to='Delivery/image/')
     max_weight = models.PositiveSmallIntegerField(verbose_name=_('Qancha yuk kotara oladi?'))
     number = models.CharField(verbose_name=_('Yuk mashina raqami'), max_length=10)
     price_km = models.PositiveSmallIntegerField(verbose_name='1 km uchun narx')
@@ -55,12 +54,12 @@ class CarCargo(models.Model):
     height = models.FloatField(verbose_name=_('Yuk mashina balandligi'))
     width = models.FloatField(verbose_name=_('Yuk mashina eni'))
     length = models.FloatField(verbose_name=_('Yuk mashina uzunligi'))
-    image = models.ImageField(verbose_name=_('Yuk mashina rasmi'),upload_to='Cargo/image/')
     max_weight = models.FloatField(verbose_name=_('Qancha yuk kotara oladi?'))
     number = models.CharField(verbose_name=_('Yuk mashina raqami'), max_length=10)
     price_km = models.PositiveSmallIntegerField(verbose_name='1 km uchun narx')
     created = models.DateTimeField(auto_now_add=True)
     type = models.ForeignKey(CarDeliveryType, on_delete=models.CASCADE,)
+
 
     def __str__(self):
         return self.name
