@@ -268,6 +268,7 @@
 
             document.getElementById('carBrand').textContent = carInfo[taxiType].brand;
             document.getElementById('carModel').textContent = carInfo[taxiType].model;
+
         }
 
         function updateDriverInfo() {
@@ -319,6 +320,7 @@
             fareSpan.textContent = fare.toLocaleString();
 
             resultDiv.style.display = 'block';
+            updateDriverInfo()
         }
 
         // Sahifa yuklanganda ma'lumotlarni to'ldirish

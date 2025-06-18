@@ -317,6 +317,7 @@
             document.getElementById('height').textContent = vehicleInfo[deliveryType].height;
             document.getElementById('length').textContent = vehicleInfo[deliveryType].length;
             document.getElementById('width').textContent = vehicleInfo[deliveryType].width;
+            updateDriverInfo()
         }
 
         function validateWeight() {
@@ -385,6 +386,7 @@
             fareSpan.textContent = fare.toLocaleString();
 
             resultDiv.style.display = 'block';
+            updateDriverInfo()
         }
 
         // Sahifa yuklanganda ma'lumotlarni to'ldirish

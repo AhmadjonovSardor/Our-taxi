@@ -321,6 +321,7 @@
             document.getElementById('height').textContent = vehicleInfo[cargoType].height;
             document.getElementById('length').textContent = vehicleInfo[cargoType].length;
             document.getElementById('width').textContent = vehicleInfo[cargoType].width;
+            updateDriverInfo()
         }
 
         function validateWeight() {
@@ -395,6 +396,7 @@
             fareSpan.textContent = fare.toLocaleString();
 
             resultDiv.style.display = 'block';
+            updateDriverInfo()
         }
 
         window.onload = () => {
