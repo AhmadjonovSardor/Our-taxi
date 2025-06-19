@@ -1,246 +1,300 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taksi Ma'lumotlari</title>
-    <link href="https://fonts.googleapis.com/css2?family=Arial&display=swap" rel="stylesheet">
+    <title>Taksi Ma'lumotlari - MyTaxi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-x: hidden;
+            padding: 0;
         }
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
         }
         .header {
-            text-align: center;
+            background: #ffffff;
             padding: 2rem;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            box-shadow: 0 0 20px rgba(255, 0, 204, 0.7);
-            animation: neonGlow 2s ease-in-out infinite alternate;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .header img.logo {
+            max-width: 180px;
+            margin-bottom: 0.5rem;
         }
         .header h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+        .nav-links {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .nav-links a {
+            margin: 0 1rem;
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .nav-section {
-            background: rgba(0, 255, 204, 0.1);
-            padding: 1rem;
             margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+        .nav-section h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
         .nav-options {
             display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
             justify-content: center;
-            gap: 1rem;
         }
         .nav-card {
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 0, 204, 0.5);
+            min-width: 140px;
+            text-align: center;
         }
         .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.8);
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: #fff9e6;
         }
         .nav-card input {
             display: none;
         }
-        .nav-card input:checked + label {
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
-        }
-        .nav-card input:checked + label::before {
-            content: '';
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 255, 204, 0.2);
-            border-radius: 8px;
-            z-index: -1;
-        }
         .nav-card label {
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            text-shadow: 0 0 5px #ffffff;
-            position: relative;
-            z-index: 1;
         }
-        .taxi-image {
-            display: block;
-            margin: 1rem auto;
-            border-radius: 1rem;
-            transition: transform 0.3s ease;
-            max-width: 300px;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+        .nav-card i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: #ffcc00;
         }
-        .taxi-image:hover {
-            transform: scale(1.02);
+        .nav-card input:checked + label {
+            color: #ffcc00;
+            font-weight: 700;
+        }
+        .nav-card input:checked + label i {
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
         }
         .info-section {
-            background: rgba(0, 255, 204, 0.1);
+            background: #f9f9f9;
             padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
         .info-section p {
-            font-size: 1.1rem;
+            font-size: 1rem;
+            color: #333;
             margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .info-section i {
+            margin-right: 0.5rem;
+            color: #ffcc00;
         }
         .result-section {
             display: none;
-            background: rgba(0, 255, 204, 0.1);
+            margin-top: 2rem;
             padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .result-section p {
-            font-size: 1.1rem;
-            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .result-section #map {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
         }
         .neon-button {
             display: block;
             margin: 2rem auto;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: #ffcc00;
             border: none;
-            border-radius: 8px;
-            color: #ffffff;
+            border-radius: 10px;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.7);
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
         .neon-button:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 204, 1);
+            background: #e6b800;
             transform: scale(1.05);
         }
-        @keyframes neonGlow {
-            from {
-                box-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff;
-            }
-            to {
-                box-shadow: 0 0 20px #ff00cc, 0 0 30px #3333ff;
-            }
+        .neon-button i {
+            margin-right: 0.5rem;
+        }
+        .footer {
+            margin-top: auto;
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .footer p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        .footer a:hover {
+            text-decoration: underline;
         }
         @media (max-width: 600px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.9rem;
+            }
+            .header img.logo {
+                max-width: 140px;
+            }
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            .nav-options {
+                flex-direction: column;
+                gap: 1rem;
             }
             .nav-card {
-                min-width: 100px;
+                min-width: 120px;
+            }
+            .neon-button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
     <header class="header">
+        <img src="https://via.placeholder.com/180x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
         <h1>Taksi Ma'lumotlari</h1>
     </header>
 
     <div class="container">
-
         <section class="nav-section">
+            <h2>Taksi turi</h2>
             <div class="nav-options">
                 <div class="nav-card">
                     <input type="radio" name="taxi-type" id="ekonom" value="ekonom" checked onchange="calculateFare()">
-                    <label for="ekonom"><i class="fas fa-car mr-2"></i>Ekonom</label>
+                    <label for="ekonom"><i class="fas fa-car"></i> Ekonom</label>
                 </div>
                 <div class="nav-card">
                     <input type="radio" name="taxi-type" id="komfort" value="komfort" onchange="calculateFare()">
-                    <label for="komfort"><i class="fas fa-car-side mr-2"></i>Komfort</label>
+                    <label for="komfort"><i class="fas fa-car-side"></i> Komfort</label>
                 </div>
                 <div class="nav-card">
                     <input type="radio" name="taxi-type" id="miniven" value="miniven" onchange="calculateFare()">
-                    <label for="miniven"><i class="fas fa-van-shuttle mr-2"></i>Lux</label>
+                    <label for="miniven"><i class="fas fa-van-shuttle"></i> Lux</label>
                 </div>
             </div>
         </section>
 
         <section class="info-section">
-            <p><i class="fas fa-map-marker-alt mr-2"></i><span class="font-semibold">Manzildan:</span> <span id="from"></span></p>
-            <p><i class="fas fa-flag-checkered mr-2"></i><span class="font-semibold">Manzilgacha:</span> <span id="to"></span></p>
-            <p><i class="fas fa-car mr-2"></i><span class="font-semibold">Taksi turi:</span> <span id="taxiType"></span></p>
-            <p><i class="fas fa-car-alt mr-2"></i><span class="font-semibold">Moshina markasi:</span> <span id="carBrand"></span></p>
-            <p><i class="fas fa-car-side mr-2"></i><span class="font-semibold">Moshina nomi:</span> <span id="carModel"></span></p>
-            <p><i class="fas fa-user mr-2"></i><span class="font-semibold">Haydovchi:</span> <span id="driverName"></span></p>
-            <p><i class="fas fa-phone mr-2"></i><span class="font-semibold">Telefon raqami:</span> <a href="tel:" id="driverPhone" class="text-blue-300 hover:underline"></a></p>
-            <p><i class="fas fa-car mr-2"></i><span class="font-semibold">Mashina raqami:</span> <span id="carNumber"></span></p>
+            <p><i class="fas fa-map-marker-alt"></i><span class="font-semibold">Manzildan:</span> <span id="from"></span></p>
+            <p><i class="fas fa-flag-checkered"></i><span class="font-semibold">Manzilgacha:</span> <span id="to"></span></p>
+            <p><i class="fas fa-car"></i><span class="font-semibold">Taksi turi:</span> <span id="taxiType"></span></p>
+            <p><i class="fas fa-car-alt"></i><span class="font-semibold">Moshina markasi:</span> <span id="carBrand"></span></p>
+            <p><i class="fas fa-car-side"></i><span class="font-semibold">Moshina nomi:</span> <span id="carModel"></span></p>
+            <p><i class="fas fa-user"></i><span class="font-semibold">Haydovchi:</span> <span id="driverName"></span></p>
+            <p><i class="fas fa-phone"></i><span class="font-semibold">Telefon raqami:</span> <a href="tel:" id="driverPhone" class="text-yellow-600 hover:underline"></a></p>
+            <p><i class="fas fa-car"></i><span class="font-semibold">Mashina raqami:</span> <span id="carNumber"></span></p>
         </section>
 
-        <button class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator mr-2"></i>Narx va Vaqtni Hisoblash</button>
+        <button class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator"></i> Narx va Vaqtni Hisoblash</button>
 
-        <section id="result" class="result-section">
-            <p><i class="fas fa-ruler mr-2"></i><span class="font-semibold">Masofa:</span> <span id="distance"></span> km</p>
-            <p><i class="fas fa-clock mr-2"></i><span class="font-semibold">Taxminiy vaqt:</span> <span id="time"></span> daqiqa</p>
-            <p><i class="fas fa-money-bill-wave mr-2"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
-        </section>
+        <div class="result-section" id="result">
+            <p><i class="fas fa-ruler"></i><span class="font-semibold">Masofa:</span> <span id="distance"></span> km</p>
+            <p><i class="fas fa-clock"></i><span class="font-semibold">Taxminiy vaqt:</span> <span id="time"></span> daqiqa</p>
+            <p><i class="fas fa-money-bill-wave"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
+            <div id="map"></div>
+        </div>
 
-        <a href="{% url 'home' %}" class="neon-button"><i class="fas fa-arrow-left mr-2"></i>Orqaga</a>
+        <a href="index.html" class="neon-button"><i class="fas fa-arrow-left"></i> Orqaga</a>
     </div>
 
+    <footer class="footer">
+        <p>Biz bilan bog'laning:
+            <a href="tel:+998123456789">+998 123 456 789</a> |
+            <a href="mailto:info@mytaxi.uz">info@mytaxi.uz</a>
+        </p>
+        <p><a href="#">Ilovamizni yuklab oling</a></p>
+        <p>© 2025 MyTaxi. Barcha huquqlar himoyalangan.</p>
+    </footer>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=uz_UZ&apikey=YOUR_API_KEY"></script>
     <script>
+        // Yandex Maps initialization
+        ymaps.ready(function () {
+            var myMap = new ymaps.Map("map", {
+                center: [41.311081, 69.240562], // Toshkent markazi
+                zoom: 12
+            });
+        });
+
         function generateRandomDriver() {
             const names = [
-                "Ali Vohidov", "Bobur Mirzaev", "Davron Juraev", "Eldor Rahimov", 
+                "Ali Vohidov", "Bobur Mirzaev", "Davron Juraev", "Eldor Rahimov",
                 "Farrux Xo‘jayev", "G‘olib Toshmatov", "Hasan Karimov", "Islom Odilov"
             ];
             const randomName = names[Math.floor(Math.random() * names.length)];
@@ -268,7 +322,6 @@
 
             document.getElementById('carBrand').textContent = carInfo[taxiType].brand;
             document.getElementById('carModel').textContent = carInfo[taxiType].model;
-
         }
 
         function updateDriverInfo() {
@@ -282,19 +335,18 @@
 
         function calculateFare() {
             const urlParams = new URLSearchParams(window.location.search);
-            const from = urlParams.get('from') || 'Toshkent, Chilanzar, 45-uy';
-            const to = urlParams.get('to') || '';
+            const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
+            const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
             const selectedTaxiType = document.querySelector('input[name="taxi-type"]:checked').value || urlParams.get('taxiType') || 'ekonom';
 
             document.getElementById('from').textContent = from;
             document.getElementById('to').textContent = to;
             document.getElementById('taxiType').textContent = selectedTaxiType.charAt(0).toUpperCase() + selectedTaxiType.slice(1);
 
-            // Moshina markasi va nomini yangilash
             updateCarInfo(selectedTaxiType);
 
-            if (!to) {
-                alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
+            if (!from || !to) {
+                alert("Iltimos, boshlang‘ich va yakuniy manzillarni kiriting!");
                 return;
             }
 
@@ -303,11 +355,9 @@
             const timeSpan = document.getElementById('time');
             const fareSpan = document.getElementById('fare');
 
-            // Tasodifiy masofa (5-15 km)
             const distance = Math.random() * 10 + 5;
-            const time = Math.round(distance * 2); // 1 km ~ 2 daqiqa
+            const time = Math.round(distance * 2);
 
-            // Narx hisoblash
             let baseFare = 5000;
             let pricePerKm = 3000;
             if (selectedTaxiType === 'komfort') pricePerKm *= 1.2;
@@ -320,27 +370,21 @@
             fareSpan.textContent = fare.toLocaleString();
 
             resultDiv.style.display = 'block';
-            updateDriverInfo()
+            updateDriverInfo();
         }
 
-        // Sahifa yuklanganda ma'lumotlarni to'ldirish
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const from = urlParams.get('from') || 'Toshkent, Chilanzar, 45-uy';
-            const to = urlParams.get('to') || '';
+            const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
+            const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
             const taxiType = urlParams.get('taxiType') || 'ekonom';
 
             document.getElementById('from').textContent = from;
             document.getElementById('to').textContent = to;
             document.getElementById('taxiType').textContent = taxiType.charAt(0).toUpperCase() + taxiType.slice(1);
 
-            // Moshina markasi va nomini sozlash
             updateCarInfo(taxiType);
-
-            // Tasodifiy haydovchi ma'lumotlarini generatsiya qilish
             updateDriverInfo();
-
-            // Tanlangan taksi turini navigatsiyada belgilash
             document.getElementById(taxiType).checked = true;
         };
     </script>

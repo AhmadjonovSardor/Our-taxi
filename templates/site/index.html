@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTaxi - Toshkentda Tezkor Transport</title>
+    <title>Taksi Xizmati - MyTaxi</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -29,7 +29,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             z-index: -1;
         }
         .header {
@@ -39,79 +39,39 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         .header img.logo {
-            max-width: 180px;
+            max-width: 200px;
             margin-bottom: 0.5rem;
         }
         .header h1 {
-            font-size: 2.3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: #ffcc00;
         }
-        .header p {
-            font-size: 1.2rem;
-            color: #555;
-            margin-top: 0.5rem;
-        }
         .container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 2rem;
             background: #ffffff;
             border-radius: 14px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .location-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+        .nav-section {
             margin-bottom: 2rem;
         }
-        .input-group {
-            flex: 1 1 300px;
-        }
-        .input-group label {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-        .input-group i {
-            color: #ffcc00;
-            margin-right: 0.5rem;
-            font-size: 1.4rem;
-        }
-        .input-field {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #ffcc00;
-            box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
-        }
-        .service-section {
-            margin-bottom: 2rem;
-        }
-        .service-section h2 {
+        .nav-section h2 {
             font-size: 1.8rem;
             font-weight: 500;
             color: #333;
             text-align: center;
             margin-bottom: 1.5rem;
         }
-        .service-options {
+        .nav-options {
             display: flex;
             flex-wrap: wrap;
             gap: 1.5rem;
             justify-content: center;
         }
-        .service-card {
+        .nav-card {
             background: #f9f9f9;
             padding: 1.5rem;
             border-radius: 10px;
@@ -120,17 +80,16 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             min-width: 140px;
             text-align: center;
-            position: relative;
         }
-        .service-card:hover {
+        .nav-card:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             background: #fff9e6;
         }
-        .service-card input {
+        .nav-card input {
             display: none;
         }
-        .service-card label {
+        .nav-card label {
             font-size: 1.1rem;
             font-weight: 500;
             color: #333;
@@ -139,43 +98,81 @@
             justify-content: center;
             cursor: pointer;
         }
-        .service-card i {
+        .nav-card i {
             font-size: 1.5rem;
             margin-right: 0.5rem;
             color: #ffcc00;
         }
-        .service-card input:checked + label {
+        .nav-card input:checked + label {
             color: #ffcc00;
             font-weight: 700;
         }
-        .service-card input:checked + label i {
-            color: #ffcc00;
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
-        }
-        .hint {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-            margin-top: 1rem;
-        }
-        .submit-button {
-            display: block;
-            margin: 2rem auto;
-            padding: 1.2rem 3rem;
-            font-size: 1.3rem;
-            font-weight: 500;
-            background: #ffcc00;
-            border: none;
+        .info-section {
+            background: #f9f9f9;
+            padding: 1.5rem;
             border-radius: 10px;
-            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .info-section p {
+            font-size: 1rem;
+            color: #333;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .info-section i {
+            margin-right: 0.5rem;
+            color: #ffcc00;
+        }
+        .preferences-section {
+            margin: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .preferences-section label {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #333;
             cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
         }
-        .submit-button:hover {
-            background: #e6b800;
-            transform: scale(1.05);
+        .preferences-section input[type="checkbox"] {
+            margin-right: 0.5rem;
         }
-        .submit-button i {
+        .payment-section {
+            margin: 1rem 0;
+        }
+        .payment-section .payment-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .payment-section input[type="radio"] {
+            display: none;
+        }
+        .payment-section label {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+        }
+        .payment-section input:checked + label {
+            background: #ffcc00;
+            color: #fff;
+            border-color: #ffcc00;
+        }
+        .driver-availability {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1rem;
+            color: #333;
+        }
+        .driver-availability i {
+            color: #ffcc00;
             margin-right: 0.5rem;
         }
         .result-section {
@@ -192,16 +189,35 @@
             color: #333;
             margin-bottom: 0.5rem;
         }
-        .result-section .map-placeholder {
+        .result-section .fare-breakdown {
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .result-section #map {
             width: 100%;
-            height: 200px;
-            background: #e0e0e0;
+            height: 300px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: #666;
+        }
+        .neon-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+            background: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .neon-button:hover {
+            background: #e6b800;
+            transform: scale(1.05);
+        }
+        .neon-button i {
+            margin-right: 0.5rem;
         }
         .footer {
             margin-top: auto;
@@ -224,23 +240,20 @@
         }
         @media (max-width: 600px) {
             .header h1 {
-                font-size: 1.9rem;
+                font-size: 2rem;
             }
             .header img.logo {
-                max-width: 140px;
+                max-width: 160px;
             }
             .container {
                 margin: 1rem;
                 padding: 1.5rem;
             }
-            .location-section {
+            .nav-options, .payment-options {
                 flex-direction: column;
-                gap: 1.2rem;
+                gap: 1rem;
             }
-            .service-card {
-                min-width: 120px;
-            }
-            .submit-button {
+            .neon-button {
                 padding: 1rem 2rem;
                 font-size: 1.1rem;
             }
@@ -249,50 +262,90 @@
 </head>
 <body>
     <header class="header">
-        <img src="https://via.placeholder.com/180x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
-        <h1>MyTaxi</h1>
-        <p>Toshkent bo‘ylab tezkor va qulay transport</p>
+        <img src="https://via.placeholder.com/200x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
+        <h1>Taksi Ma'lumotlari</h1>
     </header>
 
     <div class="container">
-        <form id="taxiForm">
-            <section class="location-section">
-                <div class="input-group">
-                    <label for="from"><i class="fas fa-map-marker-alt"></i> Qayerdan?</label>
-                    <input type="text" id="from" class="input-field" name="from" placeholder="Masalan, Chilanzar, 45-uy" value="Toshkent, Chilanzar, 45-uy">
+        <section class="nav-section">
+            <h2>Taksi turi</h2>
+            <div class="nav-options">
+                <div class="nav-card">
+                    <input type="radio" name="taxi-type" id="ekonom" value="ekonom" checked onchange="calculateFare()">
+                    <label for="ekonom"><i class="fas fa-car"></i> Ekonom</label>
                 </div>
-                <div class="input-group">
-                    <label for="to"><i class="fas fa-flag-checkered"></i> Qayerga?</label>
-                    <input type="text" id="to" class="input-field" name="to" placeholder="Masalan, Yunusobod, 12-uy">
+                <div class="nav-card">
+                    <input type="radio" name="taxi-type" id="komfort" value="komfort" onchange="calculateFare()">
+                    <label for="komfort"><i class="fas fa-car-side"></i> Komfort</label>
                 </div>
-            </section>
-
-            <section class="service-section">
-                <h2>Xizmat turi</h2>
-                <div class="service-options">
-                    <div class="service-card">
-                        <input type="radio" name="service" id="taxi" value="taxi" checked>
-                        <label for="taxi"><i class="fas fa-taxi"></i> Ekonom Taksi</label>
-                    </div>
-                    <div class="service-card">
-                        <input type="radio" name="service" id="delivery" value="delivery">
-                        <label for="delivery"><i class="fas fa-truck"></i> Yetkazib berish</label>
-                    </div>
-                    <div class="service-card">
-                        <input type="radio" name="service" id="cargo" value="cargo">
-                        <label for="cargo"><i class="fas fa-box"></i> Yuk Tashish</label>
-                    </div>
+                <div class="nav-card">
+                    <input type="radio" name="taxi-type" id="miniven" value="miniven" onchange="calculateFare()">
+                    <label for="miniven"><i class="fas fa-van-shuttle"></i> Miniven</label>
                 </div>
-                <p class="hint">Sizga mos xizmatni tanlang</p>
-            </section>
+            </div>
+        </section>
 
-            <button type="submit" class="submit-button"><i class="fas fa-car"></i> Haydovchi chaqirish</button>
-        </form>
+        <section class="info-section">
+            <p><i class="fas fa-map-marker-alt"></i><span class="font-semibold">Qayerdan:</span> <span id="from"></span></p>
+            <p><i class="fas fa-flag-checkered"></i><span class="font-semibold">Qayerga:</span> <span id="to"></span></p>
+            <p><i class="fas fa-car"></i><span class="font-semibold">Taksi turi:</span> <span id="taxiType"></span></p>
+            <p><i class="fas fa-car-alt"></i><span class="font-semibold">Moshina markasi:</span> <span id="carBrand"></span></p>
+            <p><i class="fas fa-car-side"></i><span class="font-semibold">Moshina modeli:</span> <span id="carModel"></span></p>
+            <p><i class="fas fa-user"></i><span class="font-semibold">Haydovchi:</span> <span id="driverName"></span></p>
+            <p><i class="fas fa-phone"></i><span class="font-semibold">Telefon raqami:</span> <a href="tel:" id="driverPhone" class="text-yellow-600 hover:underline"></a></p>
+            <p><i class="fas fa-car"></i><span class="font-semibold">Moshina raqami:</span> <span id="carNumber"></span></p>
+        </section>
 
-        <div class="result-section" id="resultSection">
-            <p id="resultMessage"></p>
-            <div class="map-placeholder">Xarita: Haydovchi yo‘lda</div>
+        <div class="driver-availability">
+            <i class="fas fa-taxi"></i>
+            <span id="driverStatus">Yaqin atrofdagi haydovchilar: <span id="driverCount">3</span> ta</span>
         </div>
+
+        <section class="preferences-section">
+            <h3>Safar afzalliklari</h3>
+            <label><input type="checkbox" id="ac" onchange="calculateFare()"> Konditsioner</label>
+            <label><input type="checkbox" id="quiet" onchange="calculateFare()"> Sokin safar</label>
+        </section>
+
+        <section class="payment-section">
+            <h3>To‘lov usuli</h3>
+            <div class="payment-options">
+                <input type="radio" name="payment" id="cash" value="cash" checked>
+                <label for="cash"><i class="fas fa-money-bill"></i> Naqd</label>
+                <input type="radio" name="payment" id="card" value="card">
+                <label for="card"><i class="fas fa-credit-card"></i> Karta</label>
+                <input type="radio" name="payment" id="app" value="app">
+                <label for="app"><i class="fas fa-mobile-alt"></i> Ilova orqali</label>
+            </div>
+        </section>
+
+        <button class="neon-button" onclick="calculateFare()"><i class="fas fa-calculator"></i> Narx va Vaqtni Hisoblash</button>
+
+        <div class="result-section" id="result">
+            <p><i class="fas fa-ruler"></i><span class="font-semibold">Masofa:</span> <span id="distance"></span> km</p>
+            <p><i class="fas fa-clock"></i><span class="font-semibold">Haydovchi yetib kelish vaqti (ETA):</span> <span id="eta"></span> daqiqa</p>
+            <p><i class="fas fa-clock"></i><span class="font-semibold">Safar vaqti:</span> <span id="time"></span> daqiqa</p>
+            <p><i class="fas fa-money-bill-wave"></i><span class="font-semibold">Narx:</span> <span id="fare"></span> UZS</p>
+            <div class="fare-breakdown">
+                <p>Asosiy narx: <span id="baseFare"></span> UZS</p>
+                <p>Masofa uchun: <span id="distanceFare"></span> UZS</p>
+                <p>Qushimcha xizmatlar: <span id="extraFare"></span> UZS</p>
+            </div>
+            <div id="map"></div>
+        </div>
+
+        <div class="feedback-section">
+            <h3>Xizmat sifatini baholang</h3>
+            <div class="stars" id="ratingStars">
+                <i class="fas fa-star" data-value="1"></i>
+                <i class="fas fa-star" data-value="2"></i>
+                <i class="fas fa-star" data-value="3"></i>
+                <i class="fas fa-star" data-value="4"></i>
+                <i class="fas fa-star" data-value="5"></i>
+            </div>
+        </div>
+
+        <a href="index.html" class="neon-button"><i class="fas fa-arrow-left"></i> Orqaga</a>
     </div>
 
     <footer class="footer">
@@ -304,396 +357,184 @@
         <p>© 2025 MyTaxi. Barcha huquqlar himoyalangan.</p>
     </footer>
 
+    <script src="https://api-maps.yandex.ru/2.1/?lang=uz_UZ&apikey=YOUR_API_KEY"></script>
     <script>
-        function calculateFare(evt) {
-            evt.preventDefault();
-            const from = document.getElementById('from').value;
-            const to = document.getElementById('to').value;
-            const service = document.querySelector('input[name="service"]:checked').value;
-            if (!to) {
-                alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
+        let myMap, route;
+
+        ymaps.ready(function () {
+            myMap = new ymaps.Map("map", {
+                center: [41.311081, 69.240562], // Toshkent markazi
+                zoom: 12,
+                controls: ['zoomControl', 'geolocationControl']
+            });
+        });
+
+        function generateRandomDriver() {
+            const names = [
+                "Ali Vohidov", "Bobur Mirzaev", "Davron Juraev", "Eldor Rahimov",
+                "Farrux Xo‘jayev", "G‘olib Toshmatov", "Hasan Karimov", "Islom Odilov"
+            ];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+
+            const phonePrefix = "+998";
+            const phoneCodes = ["90", "91", "93", "94", "95", "97", "98", "99"];
+            const randomCode = phoneCodes[Math.floor(Math.random() * phoneCodes.length)];
+            const phoneNumber = `${phonePrefix}${randomCode}${Math.floor(1000000 + Math.random() * 9000000)}`;
+
+            const regionCode = String(Math.floor(10 + Math.random() * 90)).padStart(2, '0');
+            const letters = "ABCDEF";
+            const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            const numberPart = String(Math.floor(100 + Math.random() * 900)).padStart(3, '0');
+            const carNumber = `${regionCode} ${randomLetter} ${numberPart}`;
+
+            return { name: randomName, phone: phoneNumber, carNumber: carNumber };
+        }
+
+        function updateVehicleInfo(taxiType) {
+            const vehicleInfo = {
+                ekonom: { brand: 'Chevrolet', model: 'Spark' },
+                komfort: { brand: 'Hyundai', model: 'Sonata' },
+                miniven: { brand: 'Toyota', model: 'Sienna' }
+            };
+
+            document.getElementById('carBrand').textContent = vehicleInfo[taxiType].brand;
+            document.getElementById('carModel').textContent = vehicleInfo[taxiType].model;
+        }
+
+        function updateDriverInfo() {
+            const driver = generateRandomDriver();
+            document.getElementById('driverName').textContent = driver.name;
+            const phoneLink = document.getElementById('driverPhone');
+            phoneLink.textContent = driver.phone;
+            phoneLink.href = `tel:${driver.phone}`;
+            document.getElementById('carNumber').textContent = driver.carNumber;
+        }
+
+        function updateDriverAvailability() {
+            const driverCount = Math.floor(Math.random() * 5) + 1; // 1-5 haydovchi
+            document.getElementById('driverCount').textContent = driverCount;
+        }
+
+        async function calculateFare() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
+            const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
+            const selectedTaxiType = document.querySelector('input[name="taxi-type"]:checked').value || urlParams.get('taxiType') || 'ekonom';
+            const ac = document.getElementById('ac').checked;
+            const quiet = document.getElementById('quiet').checked;
+
+            document.getElementById('from').textContent = from;
+            document.getElementById('to').textContent = to;
+            document.getElementById('taxiType').textContent = selectedTaxiType.charAt(0).toUpperCase() + selectedTaxiType.slice(1);
+
+            updateVehicleInfo(selectedTaxiType);
+
+            if (!from || !to) {
+                alert("Iltimos, boshlang‘ich va yakuniy manzillarni kiriting!");
                 return;
             }
-            // Realistik narx va ma'lumotlar
-            const prices = {
-                taxi: "25,000 UZS",
-                delivery: "18,000 UZS",
-                cargo: "60,000 UZS"
-            };
-            const arrivalTimes = {
-                taxi: "5-10 daqiqa",
-                delivery: "15-20 daqiqa",
-                cargo: "20-30 daqiqa"
-            };
-            const drivers = [
-                { name: "Ali", car: "Chevrolet Cobalt", plate: "01 A 123 BC" },
-                { name: "Bobur", car: "Hyundai Accent", plate: "01 B 456 DE" },
-                { name: "Dilshod", car: "Kia Rio", plate: "01 C 789 FG" }
-            ];
-            const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
-            const resultMessage = `
-                Buyurtma qabul qilindi!<br>
-                Xizmat: ${service === 'taxi' ? 'Ekonom Taksi' : service === 'delivery' ? 'Yetkazib berish' : 'Yuk Tashish'}<br>
-                Taxminiy narx: ${prices[service]}<br>
-                Haydovchi: ${randomDriver.name} (${randomDriver.car}, ${randomDriver.plate})<br>
-                Kelish vaqti: ${arrivalTimes[service]}
-            `;
-            const resultSection = document.getElementById('resultSection');
-            const resultMessageElement = document.getElementById('resultMessage');
-            resultMessageElement.innerHTML = resultMessage;
-            resultSection.style.display = 'block';
-        }
 
-        document.getElementById('taxiForm').addEventListener('submit', calculateFare);
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTaxi - Toshkentda Tezkor Transport</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            z-index: -1;
-        }
-        .header {
-            background: #ffffff;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        .header img.logo {
-            max-width: 180px;
-            margin-bottom: 0.5rem;
-        }
-        .header h1 {
-            font-size: 2.3rem;
-            font-weight: 700;
-            color: #ffcc00;
-        }
-        .header p {
-            font-size: 1.2rem;
-            color: #555;
-            margin-top: 0.5rem;
-        }
-        .container {
-            max-width: 850px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        .location-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .input-group {
-            flex: 1 1 300px;
-        }
-        .input-group label {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-        .input-group i {
-            color: #ffcc00;
-            margin-right: 0.5rem;
-            font-size: 1.4rem;
-        }
-        .input-field {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #ffcc00;
-            box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
-        }
-        .service-section {
-            margin-bottom: 2rem;
-        }
-        .service-section h2 {
-            font-size: 1.8rem;
-            font-weight: 500;
-            color: #333;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .service-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-        }
-        .service-card {
-            background: #f9f9f9;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            min-width: 140px;
-            text-align: center;
-            position: relative;
-        }
-        .service-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            background: #fff9e6;
-        }
-        .service-card input {
-            display: none;
-        }
-        .service-card label {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .service-card i {
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-            color: #ffcc00;
-        }
-        .service-card input:checked + label {
-            color: #ffcc00;
-            font-weight: 700;
-        }
-        .service-card input:checked + label i {
-            color: #ffcc00;
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
-        }
-        .hint {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-            margin-top: 1rem;
-        }
-        .submit-button {
-            display: block;
-            margin: 2rem auto;
-            padding: 1.2rem 3rem;
-            font-size: 1.3rem;
-            font-weight: 500;
-            background: #ffcc00;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-        .submit-button:hover {
-            background: #e6b800;
-            transform: scale(1.05);
-        }
-        .submit-button i {
-            margin-right: 0.5rem;
-        }
-        .result-section {
-            display: none;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: #f9f9f9;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .result-section p {
-            font-size: 1rem;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-        .result-section .map-placeholder {
-            width: 100%;
-            height: 200px;
-            background: #e0e0e0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: #666;
-        }
-        .footer {
-            margin-top: auto;
-            background: #ffffff;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .footer p {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        .footer a {
-            color: #ffcc00;
-            text-decoration: none;
-            margin: 0 0.5rem;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.9rem;
-            }
-            .header img.logo {
-                max-width: 140px;
-            }
-            .container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            .location-section {
-                flex-direction: column;
-                gap: 1.2rem;
-            }
-            .service-card {
-                min-width: 120px;
-            }
-            .submit-button {
-                padding: 1rem 2rem;
-                font-size: 1.1rem;
+            const resultDiv = document.getElementById('result');
+            const distanceSpan = document.getElementById('distance');
+            const etaSpan = document.getElementById('eta');
+            const timeSpan = document.getElementById('time');
+            const fareSpan = document.getElementById('fare');
+            const baseFareSpan = document.getElementById('baseFare');
+            const distanceFareSpan = document.getElementById('distanceFare');
+            const extraFareSpan = document.getElementById('extraFare');
+
+            try {
+                if (route) {
+                    myMap.geoObjects.remove(route);
+                }
+
+                const multiRoute = new ymaps.multiRouter.MultiRoute({
+                    referencePoints: [from, to],
+                    params: { routingMode: 'auto' }
+                }, {
+                    boundsAutoUpdate: true
+                });
+
+                route = multiRoute;
+                myMap.geoObjects.add(route);
+
+                const routeData = await new Promise((resolve) => {
+                    multiRoute.model.events.add('requestsuccess', function () {
+                        const activeRoute = multiRoute.getActiveRoute();
+                        if (activeRoute) {
+                            resolve({
+                                distance: activeRoute.properties.get('distance').value / 1000, // km
+                                duration: activeRoute.properties.get('duration').value / 60 // minutes
+                            });
+                        }
+                    });
+                });
+
+                let baseFare = 5000;
+                let pricePerKm = 3000;
+                let extraFare = 0;
+
+                if (selectedTaxiType === 'komfort') {
+                    pricePerKm *= 1.2;
+                    baseFare *= 1.2;
+                }
+                if (selectedTaxiType === 'miniven') {
+                    pricePerKm *= 1.5;
+                    baseFare *= 1.5;
+                }
+
+                if (ac) extraFare += 2000; // Konditsioner uchun
+                if (quiet) extraFare += 1000; // Sokin safar uchun
+
+                const distanceFare = Math.round(routeData.distance * pricePerKm);
+                const totalFare = Math.round(baseFare + distanceFare + extraFare);
+
+                distanceSpan.textContent = routeData.distance.toFixed(1);
+                etaSpan.textContent = Math.round(Math.random() * 5 + 2); // 2-7 daqiqa ETA
+                timeSpan.textContent = Math.round(routeData.duration);
+                fareSpan.textContent = totalFare.toLocaleString();
+                baseFareSpan.textContent = baseFare.toLocaleString();
+                distanceFareSpan.textContent = distanceFare.toLocaleString();
+                extraFareSpan.textContent = extraFare.toLocaleString();
+
+                resultDiv.style.display = 'block';
+                updateDriverInfo();
+                updateDriverAvailability();
+            } catch (error) {
+                console.error('Xatolik:', error);
+                alert('Masofa va vaqtni hisoblashda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
             }
         }
-    </style>
-</head>
-<body>
-    <header class="header">
-        <img src="https://via.placeholder.com/180x60?text=MyTaxi+Logo" alt="MyTaxi Logo" class="logo">
-        <h1>MyTaxi</h1>
-        <p>Toshkent bo‘ylab tezkor va qulay transport</p>
-    </header>
 
-    <div class="container">
-        <form id="taxiForm">
-            <section class="location-section">
-                <div class="input-group">
-                    <label for="from"><i class="fas fa-map-marker-alt"></i> Qayerdan?</label>
-                    <input type="text" id="from" class="input-field" name="from" placeholder="Masalan, Chilanzar, 45-uy" value="Toshkent, Chilanzar, 45-uy">
-                </div>
-                <div class="input-group">
-                    <label for="to"><i class="fas fa-flag-checkered"></i> Qayerga?</label>
-                    <input type="text" id="to" class="input-field" name="to" placeholder="Masalan, Yunusobod, 12-uy">
-                </div>
-            </section>
-
-            <section class="service-section">
-                <h2>Xizmat turi</h2>
-                <div class="service-options">
-                    <div class="service-card">
-                        <input type="radio" name="service" id="taxi" value="taxi" checked>
-                        <label for="taxi"><i class="fas fa-taxi"></i> Ekonom Taksi</label>
-                    </div>
-                    <div class="service-card">
-                        <input type="radio" name="service" id="delivery" value="delivery">
-                        <label for="delivery"><i class="fas fa-truck"></i> Yetkazib berish</label>
-                    </div>
-                    <div class="service-card">
-                        <input type="radio" name="service" id="cargo" value="cargo">
-                        <label for="cargo"><i class="fas fa-box"></i> Yuk Tashish</label>
-                    </div>
-                </div>
-                <p class="hint">Sizga mos xizmatni tanlang</p>
-            </section>
-
-            <button type="submit" class="submit-button"><i class="fas fa-car"></i> Haydovchi chaqirish</button>
-        </form>
-
-        <div class="result-section" id="resultSection">
-            <p id="resultMessage"></p>
-            <div class="map-placeholder">Xarita: Haydovchi yo‘lda</div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <p>Biz bilan bog'laning:
-            <a href="tel:+998123456789">+998 123 456 789</a> |
-            <a href="mailto:info@mytaxi.uz">info@mytaxi.uz</a>
-        </p>
-        <p><a href="#">Ilovamizni yuklab oling</a></p>
-        <p>© 2025 MyTaxi. Barcha huquqlar himoyalangan.</p>
-    </footer>
-
-    <script>
-        function calculateFare(evt) {
-            evt.preventDefault();
-            const from = document.getElementById('from').value;
-            const to = document.getElementById('to').value;
-            const service = document.querySelector('input[name="service"]:checked').value;
-            if (!to) {
-                alert("Iltimos, manzilgacha bo'lgan joyni kiriting!");
-                return;
-            }
-            // Realistik narx va ma'lumotlar
-            const prices = {
-                taxi: "25,000 UZS",
-                delivery: "18,000 UZS",
-                cargo: "60,000 UZS"
-            };
-            const arrivalTimes = {
-                taxi: "5-10 daqiqa",
-                delivery: "15-20 daqiqa",
-                cargo: "20-30 daqiqa"
-            };
-            const drivers = [
-                { name: "Ali", car: "Chevrolet Cobalt", plate: "01 A 123 BC" },
-                { name: "Bobur", car: "Hyundai Accent", plate: "01 B 456 DE" },
-                { name: "Dilshod", car: "Kia Rio", plate: "01 C 789 FG" }
-            ];
-            const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
-            const resultMessage = `
-                Buyurtma qabul qilindi!<br>
-                Xizmat: ${service === 'taxi' ? 'Ekonom Taksi' : service === 'delivery' ? 'Yetkazib berish' : 'Yuk Tashish'}<br>
-                Taxminiy narx: ${prices[service]}<br>
-                Haydovchi: ${randomDriver.name} (${randomDriver.car}, ${randomDriver.plate})<br>
-                Kelish vaqti: ${arrivalTimes[service]}
-            `;
-            const resultSection = document.getElementById('resultSection');
-            const resultMessageElement = document.getElementById('resultMessage');
-            resultMessageElement.innerHTML = resultMessage;
-            resultSection.style.display = 'block';
+        function initRatingStars() {
+            const stars = document.querySelectorAll('#ratingStars i');
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    stars.forEach(s => {
+                        s.classList.toggle('active', parseInt(s.getAttribute('data-value')) <= value);
+                    });
+                    console.log(`Baholandi: ${value} yulduz`);
+                });
+            });
         }
 
-        document.getElementById('taxiForm').addEventListener('submit', calculateFare);
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
+            const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
+            const taxiType = urlParams.get('taxiType') || 'ekonom';
+
+            document.getElementById('from').textContent = from;
+            document.getElementById('to').textContent = to;
+            document.getElementById('taxiType').textContent = taxiType.charAt(0).toUpperCase() + taxiType.slice(1);
+
+            updateVehicleInfo(taxiType);
+            updateDriverInfo();
+            updateDriverAvailability();
+            document.getElementById(taxiType).checked = true;
+            initRatingStars();
+        };
     </script>
 </body>
 </html>
