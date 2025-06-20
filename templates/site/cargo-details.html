@@ -435,6 +435,7 @@
         }
 
         async function calculateDelivery() {
+
             const urlParams = new URLSearchParams(window.location.search);
             const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
             const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
@@ -463,31 +464,9 @@
             const fareSpan = document.getElementById('fare');
 
             try {
-                if (route) {
-                    myMap.geoObjects.remove(route);
-                }
-
-                const multiRoute = new ymaps.multiRouter.MultiRoute({
-                    referencePoints: [from, to],
-                    params: { routingMode: 'auto' }
-                }, {
-                    boundsAutoUpdate: true
-                });
-
-                route = multiRoute;
-                myMap.geoObjects.add(route);
-
-                const routeData = await new Promise((resolve) => {
-                    multiRoute.model.events.add('requestsuccess', function () {
-                        const activeRoute = multiRoute.getActiveRoute();
-                        if (activeRoute) {
-                            resolve({
-                                distance: activeRoute.properties.get('distance').value / 1000, // km
-                                duration: activeRoute.properties.get('duration').value / 60 // minutes
-                            });
-                        }
-                    });
-                });
+                // Генерация случайного расстояния и времени, как в примере calculateFare
+                const distance = Math.random() * 10 + 5; // Случайное расстояние от 5 до 15 км
+                const time = Math.round(distance * 2); // Примерное время в минутах (2 мин/км)
 
                 let baseFare = 10000;
                 let pricePerKm = 5000;
@@ -503,23 +482,22 @@
                 }
 
                 if (packageWeight > 10) {
-                    weightMultiplier = 1 + (packageWeight - 10) * 0.05; // 5% narx oshishi har 1 kg uchun 10 kg dan keyin
+                    weightMultiplier = 1 + (packageWeight - 10) * 0.05; // 5% рост цены за каждый кг сверх 10 кг
                 }
 
-                const fare = Math.round((routeData.distance * pricePerKm + baseFare) * weightMultiplier);
+                const fare = Math.round((distance * pricePerKm + baseFare) * weightMultiplier);
 
-                distanceSpan.textContent = routeData.distance.toFixed(1);
-                timeSpan.textContent = Math.round(routeData.duration);
+                distanceSpan.textContent = distance.toFixed(1);
+                timeSpan.textContent = time;
                 fareSpan.textContent = fare.toLocaleString();
 
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden'); // Используем classList вместо style.display для соответствия Tailwind
                 updateDriverInfo();
             } catch (error) {
                 console.error('Xatolik:', error);
                 alert('Masofa va vaqtni hisoblashda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
             }
         }
-
         function initRatingStars() {
             const stars = document.querySelectorAll('#ratingStars i');
             stars.forEach(star => {

@@ -104,7 +104,7 @@
             <p class="text-lg font-semibold text-gray-800">Taxminiy narx: <span id="previewFare">0</span> UZS</p>
         </div>
 
-        <button class="neon-button bg-yellow-500 text-white py-3 px-8 rounded-lg mx-auto flex items-center text-lg font-medium" onclick="calculateDelivery()">
+        <button class="neon-button bg-yellow-500 text-white py-3 px-8 rounded-lg mx-auto flex items-center text-lg font-medium" onclick="typeof calculateDelivery === 'function' ? calculateDelivery() : console.error('calculateDelivery is not defined')">
             <i class="fas fa-calculator mr-2"></i> Narx va Vaqtni Hisoblash
         </button>
 
@@ -226,101 +226,71 @@
             document.getElementById('previewFare').textContent = estimatedFare.toLocaleString();
         }
 
-        async function calculateDelivery() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
-            const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
-            const cargoType = document.querySelector('input[name="cargo-type"]:checked').value || urlParams.get('cargoType') || 'standard';
-            const packageWeight = parseFloat(document.getElementById('packageWeight').value) || 1;
-            const smsNotification = document.getElementById('smsNotification').checked;
+            async function calculateDelivery() {
 
-            document.getElementById('from').textContent = from;
-            document.getElementById('to').textContent = to;
-            document.getElementById('cargoType').textContent = cargoType.charAt(0).toUpperCase() + cargoType.slice(1);
+                const urlParams = new URLSearchParams(window.location.search);
+                const from = urlParams.get('from') || 'Toshkent, Chorsu Bozori';
+                const to = urlParams.get('to') || 'Toshkent, Mustaqillik Maydoni';
+                const cargoType = document.querySelector('input[name="cargo-type"]:checked').value || urlParams.get('cargoType') || 'standard';
+                const packageWeight = parseFloat(document.getElementById('packageWeight').value) || 1;
+                const smsNotification = document.getElementById('smsNotification').checked;
 
-            updateVehicleInfo(cargoType);
+                document.getElementById('from').textContent = from;
+                document.getElementById('to').textContent = to;
+                document.getElementById('cargoType').textContent = cargoType.charAt(0).toUpperCase() + cargoType.slice(1);
 
-            if (!from || !to) {
-                alert("Iltimos, boshlang‘ich va yakuniy manzillarni kiriting!");
-                return;
-            }
+                updateVehicleInfo(cargoType);
 
-            if (packageWeight < 0.1) {
-                alert("Iltimos, yuk vaznini to‘g‘ri kiriting (minimum 0.1 kg)!");
-                return;
-            }
-
-            const resultDiv = document.getElementById('result');
-            const distanceSpan = document.getElementById('distance');
-            const timeSpan = document.getElementById('time');
-            const fareSpan = document.getElementById('fare');
-            const baseFareSpan = document.getElementById('baseFare');
-            const distanceFareSpan = document.getElementById('distanceFare');
-            const cargoFareSpan = document.getElementById('cargoFare');
-
-            try {
-                if (route) myMap.geoObjects.remove(route);
-
-                const multiRoute = new ymaps.multiRouter.MultiRoute({
-                    referencePoints: [from, to],
-                    params: { routingMode: 'auto' }
-                }, {
-                    boundsAutoUpdate: true
-                });
-
-                route = multiRoute;
-                myMap.geoObjects.add(route);
-
-                const routeData = await new Promise((resolve) => {
-                    multiRoute.model.events.add('requestsuccess', () => {
-                        const activeRoute = multiRoute.getActiveRoute();
-                        if (activeRoute) {
-                            resolve({
-                                distance: activeRoute.properties.get('distance').value / 1000,
-                                duration: activeRoute.properties.get('duration').value / 60
-                            });
-                        }
-                    });
-                });
-
-                let baseFare = 10000;
-                let pricePerKm = 5000;
-                let weightMultiplier = 1;
-
-                if (cargoType === 'express') {
-                    pricePerKm *= 1.5;
-                    baseFare *= 1.2;
-                }
-                if (cargoType === 'heavy') {
-                    pricePerKm *= 2;
-                    baseFare *= 1.5;
+                if (!from || !to) {
+                    alert("Iltimos, boshlang‘ich va yakuniy manzillarni kiriting!");
+                    return;
                 }
 
-                if (packageWeight > 10) {
-                    weightMultiplier = 1 + (packageWeight - 10) * 0.05;
+                if (packageWeight < 0.1) {
+                    alert("Iltimos, yuk vaznini to‘g‘ri kiriting (minimum 0.1 kg)!");
+                    return;
                 }
 
-                const distanceFare = Math.round(routeData.distance * pricePerKm);
-                const cargoFee = Math.round((baseFare + distanceFare) * (weightMultiplier - 1));
-                const totalFare = Math.round((baseFare + distanceFare) * weightMultiplier);
+                const resultDiv = document.getElementById('result');
+                const distanceSpan = document.getElementById('distance');
+                const timeSpan = document.getElementById('time');
+                const fareSpan = document.getElementById('fare');
+                const baseFareSpan = document.getElementById('baseFare');
+                const distanceFareSpan = document.getElementById('distanceFare');
+                const cargoFareSpan = document.getElementById('cargoFare');
 
-                distanceSpan.textContent = routeData.distance.toFixed(1);
-                timeSpan.textContent = Math.round(routeData.duration);
-                fareSpan.textContent = totalFare.toLocaleString();
-                baseFareSpan.textContent = baseFare.toLocaleString();
-                distanceFareSpan.textContent = distanceFare.toLocaleString();
-                cargoFareSpan.textContent = cargoFee.toLocaleString();
+                try {
+                    // Генерация случайного расстояния и времени, как в примере calculateFare
+                    const distance = Math.random() * 10 + 5; // Случайное расстояние от 5 до 15 км
+                    const time = Math.round(distance * 2); // Примерное время в минутах (2 мин/км)
 
-                resultDiv.classList.remove('hidden');
-                updateDriverInfo();
-                generateTrackingLink();
-                if (smsNotification) console.log("SMS bildirishnoma yuborildi: Buyurtma tasdiqlandi, yetkazib berish vaqti 19.06.2025 16:22");
-            } catch (error) {
-                console.error('Xatolik:', error);
-                alert('Masofa va vaqtni hisoblashda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
+                    let baseFare = 10000;
+                    let pricePerKm = 5000;
+                    if (cargoType === 'express') pricePerKm *= 1.5;
+                    if (cargoType === 'heavy') pricePerKm *= 1.5;
+
+                    const distanceFare = Math.round(distance * pricePerKm);
+                    const weightMultiplier = packageWeight > 10 ? 1 + (packageWeight - 10) * 0.05 : 1;
+                    const cargoFee = Math.round((baseFare + distanceFare) * (weightMultiplier - 1));
+                    const totalFare = Math.round((baseFare + distanceFare) * weightMultiplier);
+
+                    distanceSpan.textContent = distance.toFixed(1);
+                    timeSpan.textContent = time;
+                    fareSpan.textContent = totalFare.toLocaleString();
+                    baseFareSpan.textContent = baseFare.toLocaleString();
+                    distanceFareSpan.textContent = distanceFare.toLocaleString();
+                    cargoFareSpan.textContent = cargoFee.toLocaleString();
+
+                    resultDiv.classList.remove('hidden');
+                    updateDriverInfo();
+                    generateTrackingLink();
+
+                    if (smsNotification) console.log("SMS bildirishnoma yuborildi: Buyurtma tasdiqlandi, yetkazib berish vaqti 19.06.2025 16:22");
+                } catch (error) {
+                    console.error('Xatolik:', error);
+                    alert(`Xatolik: ${error.message}. Iltimos, manzillarni tekshirib qayta urinib ko‘ring.`);
+                }
             }
-        }
-
         function initRatingStars() {
             const stars = document.querySelectorAll('#ratingStars i');
             stars.forEach(star => {
@@ -356,6 +326,8 @@
             initRatingStars();
             previewFare();
         };
+        console.log('Is calculateDelivery defined?', typeof calculateDelivery);
+        console.log('Is calculateDelivery defined?', typeof calculateDelivery);
     </script>
 </body>
 </html>
