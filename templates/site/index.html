@@ -120,19 +120,19 @@
                     <i class="fas fa-car text-4xl text-yellow-500 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Yo‘lovchi Tashish</h3>
                     <p class="text-gray-600 mb-4">Ekonom, komfort va miniven taksilar bilan tez va xavfsiz safar.</p>
-                    <a href="taxi.html" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
+                    <a href="{% url 'taxi' %}" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
                 </div>
                 <div class="service-card bg-white p-6 rounded-lg shadow-lg text-center animate-slide-up">
                     <i class="fas fa-box text-4xl text-yellow-500 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Yuk Tashish</h3>
                     <p class="text-gray-600 mb-4">Og‘ir va katta hajmli yuklarni xavfsiz yetkazib beramiz.</p>
-                    <a href="cargo.html?service=cargo&from=Toshkent, Chorsu Bozori&to=Toshkent, Mustaqillik Maydoni" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
+                    <a href="{% url 'cargo' %}" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
                 </div>
                 <div class="service-card bg-white p-6 rounded-lg shadow-lg text-center animate-slide-up">
                     <i class="fas fa-shipping-fast text-4xl text-yellow-500 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Kuryer Xizmati</h3>
                     <p class="text-gray-600 mb-4">Hujjatlar va kichik posilkalarni tez yetkazish.</p>
-                    <a href="courier.html" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
+                    <a href="{% url 'delivery' %}" class="neon-button bg-yellow-500 text-white py-2 px-4 rounded-lg">Batafsil</a>
                 </div>
             </div>
         </section>
@@ -260,7 +260,7 @@
                     return;
                 }
 
-                const url = `${serviceType}.html?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&service=${serviceType}`;
+                const url = `${serviceType}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&service=${serviceType}`;
                 window.location.href = url;
             });
         }

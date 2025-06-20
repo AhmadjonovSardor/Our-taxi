@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render
 from core.models.models_site_Sardor import CarDelivery,CarTaxi,CarDeliveryType,CarTaxiType
 
 
